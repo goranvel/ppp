@@ -1,0 +1,107 @@
+#include <iostream>
+#include <vector>
+#include <fstream>
+
+class Point {
+		int x, y;
+	public :
+		Point () : x (0), y(0) {
+		}
+
+		Point (int xx, int yy) : x(xx), y(yy) {
+		}
+
+		int getX() {
+			return x;
+		}
+
+		int getY() {
+			return y;
+		}
+
+		void setX (int xx) {
+			x = xx;
+		}
+
+		void setY (int yy) {
+			y = yy;
+		}
+};
+
+std::ostream& operator<< (std::ostream& os, Point p) {
+	return os << p.getX() << " " << p.getY();
+}
+
+std::istream& operator>> (std::istream& is, Point& p) {
+	int x = 0, y = 0;
+	while (true) {
+		is >> x >> y;
+		if (is.fail()) {
+			std::cerr << "ERROR: invalid point\n";
+			is.clear();
+
+			char ch;
+			for (; is >> ch && !isdigit(ch););
+			if (isdigit(ch))
+				is.unget();
+		} else
+			break;
+	} 
+
+	p.setX(x);
+	p.setY(y);
+
+	return is;
+}
+
+bool operator== (Point& p1, Point& p2) {
+	return p1.getX() == p2.getX() && p1.getY() == p2.getY();
+}
+
+bool operator!= (Point& p1, Point& p2) {
+	return p1.getX() != p2.getX() || p1.getY() != p2.getY();
+}
+
+int main () {
+	std::cout << "Please enter seven point (ie. two numbers followed by whitespace)\n";
+	std::vector<Point> original_point;
+	std::vector<Point> processed_point;
+
+	std::ofstream ofs ("mydata.txt");
+
+	Point p;
+	for  (int i = 7; i; --i) {
+		std::cin >> p;
+		original_point.push_back(p);
+	}
+
+	for (int i = 7; i; --i) 
+		 ofs	<< original_point[7 - i] << "\n";
+	ofs.close();
+
+	std::ifstream ifs ("mydata.txt");
+	for (int i = 7; i; --i) {
+		ifs >> p;
+		processed_point.push_back(p);
+	}
+
+	for (int i = 7; i; --i) 
+		std::cout << "(" <<	original_point[7 - i]	<< ") ("	<<
+									processed_point[7 - i]	<< ")\n";
+
+	bool compare_points (std::vector<Point>, std::vector<Point>);
+	std::cout << (compare_points (original_point, processed_point) ? "Yes" : "No") << "\n";
+
+	return 0;
+}
+
+bool compare_points (std::vector<Point> pts1, std::vector<Point> pts2) {
+	if (pts1.size() != pts2.size())
+		return false;
+
+	for (int i = pts1.size(); i; --i)
+		if (pts1[7 - i] != pts2[7 - i])
+			return false;
+return true;
+}
+
