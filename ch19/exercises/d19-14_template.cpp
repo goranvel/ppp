@@ -191,6 +191,7 @@ class Vector {
 
 		friend std::ostream& operator<< (std::ostream &os, const Vector<T>& v);
 
+		friend std::istream& operator>> (std::istream &os, const Vector<T>& v);
 };
 
 template <typename T>
@@ -202,6 +203,21 @@ std::ostream& operator<<(std::ostream &os, const Vector<T>& v) {
 	os << "]";
 
 	return os;
+}
+
+template <typename T>
+std::istream& operator>>(std::istream &is, Vector<T>& v) {
+	char c;
+	is >> c;
+	if (c != '[' || c != ']') {
+		is.unget();
+		return is;
+	}
+
+	T val; 
+	is >> val;
+
+	return is;
 }
 
 template <class T>
